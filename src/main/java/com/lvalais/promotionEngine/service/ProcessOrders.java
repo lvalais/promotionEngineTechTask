@@ -27,16 +27,11 @@ public class ProcessOrders {
 
     public Double processOrder(SKUOrder order, List<PromotionBase> activePromoList) {
 
-        order.getSkuListWithItemCount().forEach(i -> {
-            //keep a sum of price without promo
-            order.addToOrderTotalWithoutPromo(skuBasePrice.getSkuBasePriceMap().get(i.getUnit()));
-        });
+
 
         if (activePromoList!=null) {
             //run promotions
             activePromoList.forEach(p -> {
-
-
                 //check promo is valid
                 if (checkPromoValidity(order, p)) {
                     order.getSkuListWithItemCount().forEach(o -> {
@@ -45,13 +40,22 @@ public class ProcessOrders {
                             order.addToOrderTotalWithPromo((o.getCount() / p.getSkuIDInPromoWithCount().get(o.getUnit())) * p.getAmountAfterDiscount());
                             // do remaining
                             order.addToOrderTotalWithPromo((o.getCount() % p.getSkuIDInPromoWithCount().get(o.getUnit())) * skuBasePrice.getSkuBasePriceMap().get(o.getUnit()));
-                        } else {
-                            order.addToOrderTotalWithPromo(o.getCount() * skuBasePrice.getSkuBasePriceMap().get(o.getUnit()));
-
+                            o.setItemProcessed(true);
                         }
                     });
                 }
 
+            });
+            order.getSkuListWithItemCount().stream().filter(o-> !o.isItemProcessed()).forEach(i -> {
+                //keep a sum of price without promo
+                order.addToOrderTotalWithPromo(skuBasePrice.getSkuBasePriceMap().get(i.getUnit()));
+            });
+
+        }else{
+            // no promos
+            order.getSkuListWithItemCount().forEach(i -> {
+                //keep a sum of price without promo
+                order.addToOrderTotalWithoutPromo(skuBasePrice.getSkuBasePriceMap().get(i.getUnit()));
             });
         }
 
@@ -67,9 +71,10 @@ public class ProcessOrders {
             for (SKUItem s : order.getSkuListWithItemCount()) {
                 if ((s.getUnit().equals(entry.getKey()) && s.getCount() >= entry.getValue())) {
                     actualCount++;
+                    if (requiredCount==actualCount) return true;
                 }
             }
         }
-        return requiredCount==actualCount? true: false;
+        return requiredCount == actualCount;
     }
 }
