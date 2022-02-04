@@ -70,6 +70,4 @@ class ProcessOrdersUnitTest {
         skuOrder.setSkuListWithItemCount(skuList);
         assertEquals(390,processOrders.processOrder(skuOrder, List.of(p1,p2,p3)));
     }
-
-
 }

@@ -5,17 +5,13 @@ import com.lvalais.promotionEngine.domain.SKUBasePrice;
 import com.lvalais.promotionEngine.domain.SKUItem;
 import com.lvalais.promotionEngine.domain.SKUOrder;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
+
 
 public class ProcessOrders {
-    private boolean promosActivated = true;
     private SKUBasePrice skuBasePrice;
 
     public ProcessOrders() {
