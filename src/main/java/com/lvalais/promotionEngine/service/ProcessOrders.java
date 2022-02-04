@@ -63,7 +63,7 @@ public class ProcessOrders {
             });
             //add rest of items that are not processed under promo
             order.getSkuListWithItemCount().stream().filter(o-> !o.isItemFullyProcessed()).forEach(i -> {
-                order.addToOrderTotalWithPromo(skuBasePrice.getSkuBasePriceMap().get(i.getUnit()));
+                order.addToOrderTotalWithPromo(skuBasePrice.getSkuBasePriceMap().get(i.getUnit())*i.getCount());
             });
 
         }else{
