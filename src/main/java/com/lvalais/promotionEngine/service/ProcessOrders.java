@@ -26,15 +26,12 @@ public class ProcessOrders {
 
 
     public Double processOrder(SKUOrder order, List<PromotionBase> activePromoList) {
-
-
-
         if (activePromoList!=null) {
             //run promotions
             activePromoList.forEach(p -> {
                 //check promo is valid
                 if (checkPromoValidity(order, p)) {
-                    order.getSkuListWithItemCount().forEach(o -> {
+                    order.getSkuListWithItemCount().stream().filter(o-> !o.isItemProcessed()).forEach(o -> {
                         if (p.getSkuIDInPromoWithCount().containsKey(o.getUnit())) {
                             //first do the promo items 5/3 =2
                             order.addToOrderTotalWithPromo((o.getCount() / p.getSkuIDInPromoWithCount().get(o.getUnit())) * p.getAmountAfterDiscount());
