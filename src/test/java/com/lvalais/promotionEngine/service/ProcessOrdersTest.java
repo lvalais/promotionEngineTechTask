@@ -46,11 +46,14 @@ class ProcessOrdersTest {
         promoHashMapA.put("A",3);
         PromotionBase p1 = new PromotionBase(1,promoHashMapA,130);
 
+        //create promotion B
+        HashMap<String, Integer> promoHashMapB = new HashMap<>();
+        promoHashMapB.put("B",2);
+        PromotionBase p2 = new PromotionBase(2,promoHashMapB,45);
 
 
 
-
-        assertEquals(370,processOrders.processOrder(skuOrder, List.of(p1)));
+        assertEquals(370,processOrders.processOrder(skuOrder, List.of(p1,p2)));
     }
 
     @Test
