@@ -22,16 +22,25 @@ public class ProcessOrders {
 
 
     public Double processOrder(SKUOrder order, List<PromotionBase> activePromoList) {
-        if (activePromoList==null || activePromoList.isEmpty() ) {
-            order.getSkuList().forEach(o -> {
-                order.addToOrderTotalWithoutPromo(skuBasePrice.getSkuBasePriceMap().get(o));
-            });
-        }else {
+//        if (activePromoList==null || activePromoList.isEmpty() ) {
 //            order.getSkuList().forEach(o -> {
-//
-//
+//                order.addToOrderTotalWithoutPromo(skuBasePrice.getSkuBasePriceMap().get(o));
 //            });
-        }
+//        }
+
+
+        //get a count of each sku
+        order.getSkuListWithItemCount().forEach((k, v) -> {
+            //keep a sum of price without promo
+            order.addToOrderTotalWithoutPromo(skuBasePrice.getSkuBasePriceMap().get(k));
+        });
+
+        //run promotions
+//        activePromoList.forEach(p-> {
+//            p.getSkuIDInPromoWithCount()
+//
+//
+//        });
 
         return order.getOrderTotalWithoutPromo();
     }

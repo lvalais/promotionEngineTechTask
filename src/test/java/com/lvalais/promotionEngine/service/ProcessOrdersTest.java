@@ -8,7 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
@@ -25,51 +27,39 @@ class ProcessOrdersTest {
 
     @Test
     public void processOrderTestScenarioA(){
-        List<String> skuList = new ArrayList<>();
-        skuList.add("A");
-        skuList.add("B");
-        skuList.add("C");
-        skuOrder.setSkuList(skuList);
+        Map<String,Integer> skuMap = new HashMap();
+        skuMap.put("A",1);
+        skuMap.put("B",1);
+        skuMap.put("C",1);
+        skuOrder.setSkuListWithItemCount(skuMap);
         assertEquals(100,processOrders.processOrder(skuOrder, null));
     }
 
     @Test
     public void processOrderTestScenarioB(){
-        List<String> skuList = new ArrayList<>();
-        skuList.add("A");
-        skuList.add("A");
-        skuList.add("A");
-        skuList.add("A");
-        skuList.add("A");
+        Map<String,Integer> skuMap = new HashMap();
+        skuMap.put("A",5);
+        skuMap.put("B",5);
+        skuMap.put("C",1);
+        skuOrder.setSkuListWithItemCount(skuMap);
 
-        skuList.add("B");
-        skuList.add("B");
-        skuList.add("B");
-        skuList.add("B");
-        skuList.add("B");
+        //create promotion A
+        HashMap<String, Integer> promoHashMap = new HashMap<>();
+        promoHashMap.put("A",3);
+        PromotionBase p1 = new PromotionBase();
 
-        skuList.add("C");
-//        skuList.add(new SKU("D",15));
-        skuOrder.setSkuList(skuList);
+
         assertEquals(370,processOrders.processOrder(skuOrder, null));
     }
 
     @Test
     public void processOrderTestScenarioC(){
-        List<String> skuList = new ArrayList<>();
-        skuList.add("A");
-        skuList.add("A");
-        skuList.add("A");
-
-        skuList.add("B");
-        skuList.add("B");
-        skuList.add("B");
-        skuList.add("B");
-        skuList.add("B");
-
-        skuList.add("C");
-        skuList.add("D");
-        skuOrder.setSkuList(skuList);
+        Map<String,Integer> skuMap = new HashMap();
+        skuMap.put("A",3);
+        skuMap.put("B",5);
+        skuMap.put("C",1);
+        skuMap.put("D",1);
+        skuOrder.setSkuListWithItemCount(skuMap);
         assertEquals(280,processOrders.processOrder(skuOrder, null));
     }
 
