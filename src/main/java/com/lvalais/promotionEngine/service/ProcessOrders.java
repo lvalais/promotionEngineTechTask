@@ -84,7 +84,7 @@ public class ProcessOrders {
         int actualCount = 0;
         for (Map.Entry<String, Integer> entry: promo.getSkuIDInPromoWithCount().entrySet()) {
             for (SKUItem s : order.getSkuListWithItemCount()) {
-                if ((s.getUnit().equals(entry.getKey()) && s.getCount() >= entry.getValue())) {
+                if ((s.getUnit().equals(entry.getKey()) && s.getCount() >= entry.getValue() && !s.isItemFullyProcessed())) {
                     actualCount++;
                     if (requiredCount==actualCount) return true;
                 }
