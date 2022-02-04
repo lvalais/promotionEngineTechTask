@@ -45,9 +45,9 @@ class ProcessOrdersTest {
     @Test
     public void processOrderTestScenarioA(){
         List<SKUItem> skuList = new ArrayList<>();
-        skuList.add(new SKUItem("A",1, false));
-        skuList.add(new SKUItem("B",1,false));
-        skuList.add(new SKUItem("C",1,false));
+        skuList.add(new SKUItem("A",1, false,false));
+        skuList.add(new SKUItem("B",1,false,false));
+        skuList.add(new SKUItem("C",1,false,false));
         skuOrder.setSkuListWithItemCount(skuList);
         assertEquals(100,processOrders.processOrder(skuOrder, List.of(p1,p2,p3)));
     }
@@ -55,9 +55,9 @@ class ProcessOrdersTest {
     @Test
     public void processOrderTestScenarioB(){
         List<SKUItem> skuList = new ArrayList<>();
-        skuList.add(new SKUItem("A",5, false));
-        skuList.add(new SKUItem("B",5,false));
-        skuList.add(new SKUItem("C",1,false));
+        skuList.add(new SKUItem("A",5, false,false));
+        skuList.add(new SKUItem("B",5,false,false));
+        skuList.add(new SKUItem("C",1,false,false));
         skuOrder.setSkuListWithItemCount(skuList);
 
 
@@ -67,10 +67,10 @@ class ProcessOrdersTest {
     @Test
     public void processOrderTestScenarioC(){
         List<SKUItem> skuList = new ArrayList<>();
-        skuList.add(new SKUItem("A",3, false));
-        skuList.add(new SKUItem("B",5,false));
-        skuList.add(new SKUItem("C",1,false));
-        skuList.add(new SKUItem("D",1,false));
+        skuList.add(new SKUItem("A",3, false,false));
+        skuList.add(new SKUItem("B",5,false,false));
+        skuList.add(new SKUItem("C",1,false,false));
+        skuList.add(new SKUItem("D",1,false,false));
         skuOrder.setSkuListWithItemCount(skuList);
         assertEquals(280,processOrders.processOrder(skuOrder, List.of(p1,p2,p3)));
     }

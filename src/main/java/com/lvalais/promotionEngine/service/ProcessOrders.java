@@ -6,9 +6,11 @@ import com.lvalais.promotionEngine.domain.SKUItem;
 import com.lvalais.promotionEngine.domain.SKUOrder;
 
 import java.io.Console;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 public class ProcessOrders {
@@ -31,19 +33,36 @@ public class ProcessOrders {
             activePromoList.forEach(p -> {
                 //check promo is valid
                 if (checkPromoValidity(order, p)) {
-                    order.getSkuListWithItemCount().stream().filter(o-> !o.isItemProcessed()).forEach(o -> {
+                    int requiredCount=p.getSkuIDInPromoWithCount().size();
+                    AtomicInteger actualCount = new AtomicInteger(0);
+                    List<Integer> indexListOfPartlyProcessed = new ArrayList<>();
+                    order.getSkuListWithItemCount().stream().filter(o-> !o.isItemFullyProcessed()).forEach(o -> {
                         if (p.getSkuIDInPromoWithCount().containsKey(o.getUnit())) {
-                            //first do the promo items 5/3 =2
-                            order.addToOrderTotalWithPromo((o.getCount() / p.getSkuIDInPromoWithCount().get(o.getUnit())) * p.getAmountAfterDiscount());
-                            // do remaining
-                            order.addToOrderTotalWithPromo((o.getCount() % p.getSkuIDInPromoWithCount().get(o.getUnit())) * skuBasePrice.getSkuBasePriceMap().get(o.getUnit()));
-                            o.setItemProcessed(true);
+                            if (requiredCount==actualCount.addAndGet(1)) {
+                                //first do the promo items
+                                order.addToOrderTotalWithPromo((o.getCount() / p.getSkuIDInPromoWithCount().get(o.getUnit())) * p.getAmountAfterDiscount());
+                                // do any remaining
+                                order.addToOrderTotalWithPromo((o.getCount() % p.getSkuIDInPromoWithCount().get(o.getUnit())) * skuBasePrice.getSkuBasePriceMap().get(o.getUnit()));
+                                o.setItemFullyProcessed(true);
+                                // set rest to full
+                                if (indexListOfPartlyProcessed.size()==requiredCount-1){
+                                    //then this is the last piece of puzzle for this promotion
+                                    //go and convert these to fully processed to avoid reprocessing
+                                    indexListOfPartlyProcessed.forEach(i->{
+                                        order.getSkuListWithItemCount().get(i).setItemFullyProcessed(true);
+                                    });
+                                }
+                            }else{
+                                //else do another loop to find the pair? what if there are more required??
+                                o.setItemPartiallyProcessed(true);
+                                indexListOfPartlyProcessed.add(order.getSkuListWithItemCount().indexOf(o));
+                            }
                         }
                     });
                 }
             });
             //add rest of items that are not processed under promo
-            order.getSkuListWithItemCount().stream().filter(o-> !o.isItemProcessed()).forEach(i -> {
+            order.getSkuListWithItemCount().stream().filter(o-> !o.isItemFullyProcessed()).forEach(i -> {
                 order.addToOrderTotalWithPromo(skuBasePrice.getSkuBasePriceMap().get(i.getUnit()));
             });
 

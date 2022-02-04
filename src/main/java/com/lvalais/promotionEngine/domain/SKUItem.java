@@ -12,5 +12,6 @@ import lombok.ToString;
 public class SKUItem {
     private String unit;
     private int count;
-    private boolean itemProcessed = false;
+    private boolean itemPartiallyProcessed = false;
+    private boolean itemFullyProcessed = false;
 }
