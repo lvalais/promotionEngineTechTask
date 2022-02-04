@@ -22,17 +22,57 @@ class ProcessOrdersTest {
     @BeforeEach
     void setUp() {
         skuOrder = new SKUOrder();
-        List<SKU> skuList = new ArrayList<>();
-        skuList.add(new SKU("A",50));
-        skuList.add(new SKU("B",30));
-        skuList.add(new SKU("C",20));
-//        skuList.add(new SKU("D",15));
-        skuOrder.setSkuList(skuList);
+
     }
 
     @Test
     public void processOrderTestScenarioA(){
+        List<SKU> skuList = new ArrayList<>();
+        skuList.add(new SKU("A",50));
+        skuList.add(new SKU("B",30));
+        skuList.add(new SKU("C",20));
+        skuOrder.setSkuList(skuList);
         assertEquals(100,processOrders.processOrder(skuOrder, null));
+    }
+
+    @Test
+    public void processOrderTestScenarioB(){
+        List<SKU> skuList = new ArrayList<>();
+        skuList.add(new SKU("A",50));
+        skuList.add(new SKU("A",50));
+        skuList.add(new SKU("A",50));
+        skuList.add(new SKU("A",50));
+        skuList.add(new SKU("A",50));
+
+        skuList.add(new SKU("B",30));
+        skuList.add(new SKU("B",30));
+        skuList.add(new SKU("B",30));
+        skuList.add(new SKU("B",30));
+        skuList.add(new SKU("B",30));
+
+        skuList.add(new SKU("C",20));
+//        skuList.add(new SKU("D",15));
+        skuOrder.setSkuList(skuList);
+        assertEquals(370,processOrders.processOrder(skuOrder, null));
+    }
+
+    @Test
+    public void processOrderTestScenarioC(){
+        List<SKU> skuList = new ArrayList<>();
+        skuList.add(new SKU("A",50));
+        skuList.add(new SKU("A",50));
+        skuList.add(new SKU("A",50));
+
+        skuList.add(new SKU("B",30));
+        skuList.add(new SKU("B",30));
+        skuList.add(new SKU("B",30));
+        skuList.add(new SKU("B",30));
+        skuList.add(new SKU("B",30));
+
+        skuList.add(new SKU("C",20));
+        skuList.add(new SKU("D",15));
+        skuOrder.setSkuList(skuList);
+        assertEquals(280,processOrders.processOrder(skuOrder, null));
     }
 
 
