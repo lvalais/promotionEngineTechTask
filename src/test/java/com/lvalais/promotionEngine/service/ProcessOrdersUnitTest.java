@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class ProcessOrdersUnitTest {
@@ -88,5 +88,26 @@ class ProcessOrdersUnitTest {
         skuOrder.setSkuListWithItemCount(skuList);
         assertEquals(510,processOrders.processOrder(skuOrder, List.of(p1,p2,p3,p4)));
     }
+
+    @Test
+    public void checkPromoValidityTest(){
+        List<SKUItem> skuList = new ArrayList<>();
+        skuList.add(new SKUItem("A",5, false,false));
+        skuList.add(new SKUItem("B",5,false,false));
+        skuList.add(new SKUItem("C",6,false,false));
+        skuList.add(new SKUItem("D",4,false,false));
+        skuOrder.setSkuListWithItemCount(skuList);
+        assertTrue(processOrders.checkPromoValidity(skuOrder, p4));
+    }
+    @Test
+    public void checkPromoValidityTestFail(){
+        List<SKUItem> skuList = new ArrayList<>();
+        skuList.add(new SKUItem("A",5, false,false));
+        skuList.add(new SKUItem("B",5,false,false));
+        skuList.add(new SKUItem("C",6,false,false));
+        skuOrder.setSkuListWithItemCount(skuList);
+        assertFalse(processOrders.checkPromoValidity(skuOrder, p4));
+    }
+
 
 }

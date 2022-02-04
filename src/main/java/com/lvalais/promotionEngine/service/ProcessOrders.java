@@ -84,7 +84,7 @@ public class ProcessOrders {
     }
 
 
-    private boolean checkPromoValidity(SKUOrder order, PromotionBase promo) {
+    public boolean checkPromoValidity(SKUOrder order, PromotionBase promo) {
         //get the number of conditions for this promo to be valid
         int requiredCount = promo.getSkuIDInPromoWithCount().size();
         int actualCount = 0;
