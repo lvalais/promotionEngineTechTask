@@ -20,6 +20,7 @@ class ProcessOrdersUnitTest {
     private PromotionBase p1;
     private PromotionBase p2;
     private PromotionBase p3;
+    private PromotionBase p4;
 
     @BeforeEach
     void setUp() {
@@ -37,6 +38,12 @@ class ProcessOrdersUnitTest {
         promoHashMapC.put("C",1);
         promoHashMapC.put("D",1);
         p3 = new PromotionBase(3,promoHashMapC,30);
+        //create promotion D
+        HashMap<String, Integer> promoHashMapD = new HashMap<>();
+        promoHashMapD.put("A",1);
+        promoHashMapD.put("C",1);
+        promoHashMapD.put("D",1);
+        p4 = new PromotionBase(4,promoHashMapD,18);
     }
 
     @Test
@@ -70,4 +77,16 @@ class ProcessOrdersUnitTest {
         skuOrder.setSkuListWithItemCount(skuList);
         assertEquals(390,processOrders.processOrder(skuOrder, List.of(p1,p2,p3)));
     }
+
+    @Test
+    public void processOrderTestScenarioCaseDWillNotBeValid(){
+        List<SKUItem> skuList = new ArrayList<>();
+        skuList.add(new SKUItem("A",5, false,false));
+        skuList.add(new SKUItem("B",5,false,false));
+        skuList.add(new SKUItem("C",6,false,false));
+        skuList.add(new SKUItem("D",4,false,false));
+        skuOrder.setSkuListWithItemCount(skuList);
+        assertEquals(510,processOrders.processOrder(skuOrder, List.of(p1,p2,p3,p4)));
+    }
+
 }
