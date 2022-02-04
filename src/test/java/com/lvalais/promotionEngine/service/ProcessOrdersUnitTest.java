@@ -61,14 +61,14 @@ class ProcessOrdersUnitTest {
     }
 
     @Test
-    public void processOrderTestScenarioC(){
+    public void processOrderTestScenarioOneCLeftOutOfPromo(){
         List<SKUItem> skuList = new ArrayList<>();
         skuList.add(new SKUItem("A",3, false,false));
         skuList.add(new SKUItem("B",5,false,false));
-        skuList.add(new SKUItem("C",1,false,false));
-        skuList.add(new SKUItem("D",1,false,false));
+        skuList.add(new SKUItem("C",5,false,false));
+        skuList.add(new SKUItem("D",4,false,false));
         skuOrder.setSkuListWithItemCount(skuList);
-        assertEquals(280,processOrders.processOrder(skuOrder, List.of(p1,p2,p3)));
+        assertEquals(390,processOrders.processOrder(skuOrder, List.of(p1,p2,p3)));
     }
 
 
