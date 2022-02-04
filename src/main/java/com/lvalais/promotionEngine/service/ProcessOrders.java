@@ -44,10 +44,9 @@ public class ProcessOrders {
                         }
                     });
                 }
-
             });
+            //add rest of items that are not processed under promo
             order.getSkuListWithItemCount().stream().filter(o-> !o.isItemProcessed()).forEach(i -> {
-                //keep a sum of price without promo
                 order.addToOrderTotalWithPromo(skuBasePrice.getSkuBasePriceMap().get(i.getUnit()));
             });
 
