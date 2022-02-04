@@ -15,7 +15,7 @@ import java.util.UUID;
 @ToString
 public class SKUOrder {
     private String orderUUID = UUID.randomUUID().toString();
-    private Map<String,Integer> skuListWithItemCount;
+    private List<SKUItem> skuListWithItemCount;
     private Double orderTotalWithoutPromo = 0.0;
     private Double orderTotalWithPromo = 0.0;
 

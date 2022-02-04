@@ -2,10 +2,14 @@ package com.lvalais.promotionEngine.service;
 
 import com.lvalais.promotionEngine.domain.PromotionBase;
 import com.lvalais.promotionEngine.domain.SKUBasePrice;
+import com.lvalais.promotionEngine.domain.SKUItem;
 import com.lvalais.promotionEngine.domain.SKUOrder;
 
+import java.io.Console;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 public class ProcessOrders {
     private boolean promosActivated = true;
@@ -22,26 +26,50 @@ public class ProcessOrders {
 
 
     public Double processOrder(SKUOrder order, List<PromotionBase> activePromoList) {
-//        if (activePromoList==null || activePromoList.isEmpty() ) {
-//            order.getSkuList().forEach(o -> {
-//                order.addToOrderTotalWithoutPromo(skuBasePrice.getSkuBasePriceMap().get(o));
-//            });
-//        }
 
-
-        //get a count of each sku
-        order.getSkuListWithItemCount().forEach((k, v) -> {
+        order.getSkuListWithItemCount().forEach(i -> {
             //keep a sum of price without promo
-            order.addToOrderTotalWithoutPromo(skuBasePrice.getSkuBasePriceMap().get(k));
+            order.addToOrderTotalWithoutPromo(skuBasePrice.getSkuBasePriceMap().get(i.getUnit()));
         });
 
-        //run promotions
-//        activePromoList.forEach(p-> {
-//            p.getSkuIDInPromoWithCount()
-//
-//
-//        });
+        if (activePromoList!=null) {
+            //run promotions
+            activePromoList.forEach(p -> {
 
-        return order.getOrderTotalWithoutPromo();
+
+                //check promo is valid
+                if (checkPromoValidity(order, p)) {
+                    order.getSkuListWithItemCount().forEach(o -> {
+                        if (p.getSkuIDInPromoWithCount().containsKey(o.getUnit())) {
+                            //first do the promo items 5/3 =2
+                            order.addToOrderTotalWithPromo((o.getCount() / p.getSkuIDInPromoWithCount().get(o.getUnit())) * p.getAmountAfterDiscount());
+                            // do remaining
+                            order.addToOrderTotalWithPromo((o.getCount() % p.getSkuIDInPromoWithCount().get(o.getUnit())) * skuBasePrice.getSkuBasePriceMap().get(o.getUnit()));
+                        } else {
+                            order.addToOrderTotalWithPromo(o.getCount() * skuBasePrice.getSkuBasePriceMap().get(o.getUnit()));
+
+                        }
+                    });
+                }
+
+            });
+        }
+
+        return activePromoList==null? order.getOrderTotalWithoutPromo() : order.getOrderTotalWithPromo();
+    }
+
+
+    private boolean checkPromoValidity(SKUOrder order, PromotionBase promo){
+        //get the number of conditions for this promo to be valid
+        int requiredCount= promo.getSkuIDInPromoWithCount().size();
+        int actualCount = 0;
+        for (Map.Entry<String, Integer> entry: promo.getSkuIDInPromoWithCount().entrySet()) {
+            for (SKUItem s : order.getSkuListWithItemCount()) {
+                if ((s.getUnit().equals(entry.getKey()) && s.getCount() >= entry.getValue())) {
+                    actualCount++;
+                }
+            }
+        }
+        return requiredCount==actualCount? true: false;
     }
 }
